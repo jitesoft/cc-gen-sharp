@@ -80,5 +80,35 @@ public class RepositoryExtensionTest
         Assert.Equal("Signed-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[0].Body);
     }
     
-    
+    [Fact]
+    public void TestGetConventionalCommitsBothTags()
+    {
+        var repository = LoadLocalRepository();
+        var tagToEndWith = repository.Tags["0.0.1"];
+        var tagToStartFrom = repository.Tags["0.0.2"];
+        
+        var toCheck = LoadLocalRepository().GetConventionalCommits(tagToStartFrom, tagToEndWith);
+
+        Assert.Equal(4, toCheck.Count);
+        
+        Assert.Equal("feat", toCheck[0].Type);
+        Assert.Equal("lib-cc", toCheck[0].SubType);    
+        Assert.Equal("RepositoryExtension GetConventionalCommits.", toCheck[0].Header);
+        Assert.Equal("First naive implementation.\n\nSigned-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[0].Body);
+        
+        Assert.Equal("feat", toCheck[1].Type);
+        Assert.Equal("lib-cc", toCheck[1].SubType);    
+        Assert.Equal("Initial repository extension class test.", toCheck[1].Header);
+        Assert.Equal("Signed-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[1].Body);
+        
+        Assert.Equal("hotfix", toCheck[2].Type);
+        Assert.Equal("lib-cc", toCheck[2].SubType);    
+        Assert.Equal("Missing Conventional.cs file", toCheck[2].Header);
+        Assert.Equal("Signed-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[2].Body);
+        
+        Assert.Equal("feat", toCheck[3].Type);
+        Assert.Equal("lib-cc", toCheck[3].SubType);    
+        Assert.Equal("Created initial commit parser and test.", toCheck[3].Header);
+        Assert.Equal("Including a body in this text to make sure it's around!\n\nSigned-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[3].Body);
+    }
 }

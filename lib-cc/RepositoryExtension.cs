@@ -8,18 +8,22 @@ public static class RepositoryExtension
     {
         var fromSha = from?.Target?.Sha ?? self.Head.Tip.Sha;
         var toSha = until?.Target?.Sha;
-        
+
         var commits = self.Commits.QueryBy(new CommitFilter
         {
-            SortBy = CommitSortStrategies.Topological,
+            SortBy = strategy,
             IncludeReachableFrom = fromSha,
-            ExcludeReachableFrom = toSha,
         });
         
         var filtered = commits.Where(c => c.IsConventional());
         var result = new List<Conventional>();
         foreach (var c in filtered)
         {
+            if (toSha != null && c.Sha == toSha)
+            {
+                break;
+            }
+            
             if (c.ParseConventional(out var conventional))
             {
                 result.Add(conventional!);
