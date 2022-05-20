@@ -26,8 +26,6 @@ public static class RepositoryExtension
             }
         }
 
-        result.Reverse();
-
         return result;
     }
 }
