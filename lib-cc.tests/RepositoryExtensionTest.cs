@@ -34,27 +34,51 @@ public class RepositoryExtensionTest
         // Get last 4 to check.
         var toCheck = commits.TakeLast(4).ToArray();
 
-        Assert.Equal("feat", toCheck[0].Type);
-        Assert.Equal("solution", toCheck[0].SubType);    
-        Assert.Equal("Added initial solution files.", toCheck[0].Header);
-        Assert.Equal("Signed-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[0].Body);
-
-
-        Assert.Equal("chore", toCheck[1].Type);
-        Assert.Equal("", toCheck[1].SubType);    
-        Assert.Equal("Dockerfile.", toCheck[1].Header);
-        Assert.Equal("Signed-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[1].Body);
-
-        
-        Assert.Equal("feat", toCheck[2].Type);
-        Assert.Equal("lib-cc", toCheck[2].SubType);    
-        Assert.Equal("Created initial commit parser and test.", toCheck[2].Header);
-        Assert.Equal("Including a body in this text to make sure it's around!\n\nSigned-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[2].Body);
-
-        
-        Assert.Equal("hotfix", toCheck[3].Type);
-        Assert.Equal("lib-cc", toCheck[3].SubType);    
-        Assert.Equal("Missing Conventional.cs file", toCheck[3].Header);
+        Assert.Equal("feat", toCheck[3].Type);
+        Assert.Equal("solution", toCheck[3].SubType);    
+        Assert.Equal("Added initial solution files.", toCheck[3].Header);
         Assert.Equal("Signed-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[3].Body);
+
+
+        Assert.Equal("chore", toCheck[2].Type);
+        Assert.Equal("", toCheck[2].SubType);    
+        Assert.Equal("Dockerfile.", toCheck[2].Header);
+        Assert.Equal("Signed-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[2].Body);
+
+        
+        Assert.Equal("feat", toCheck[1].Type);
+        Assert.Equal("lib-cc", toCheck[1].SubType);    
+        Assert.Equal("Created initial commit parser and test.", toCheck[1].Header);
+        Assert.Equal("Including a body in this text to make sure it's around!\n\nSigned-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[1].Body);
+
+        
+        Assert.Equal("hotfix", toCheck[0].Type);
+        Assert.Equal("lib-cc", toCheck[0].SubType);    
+        Assert.Equal("Missing Conventional.cs file", toCheck[0].Header);
+        Assert.Equal("Signed-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[0].Body);
     }
+    
+    [Fact]
+    public void TestGetConventionalCommitsFirstTag()
+    {
+        var repository = LoadLocalRepository();
+        var tagToStartFrom = repository.Tags["0.0.1"];
+        
+        
+        var toCheck = LoadLocalRepository().GetConventionalCommits(tagToStartFrom);
+
+        Assert.Equal(2, toCheck.Count);
+        
+        Assert.Equal("feat", toCheck[1].Type);
+        Assert.Equal("solution", toCheck[1].SubType);    
+        Assert.Equal("Added initial solution files.", toCheck[1].Header);
+        Assert.Equal("Signed-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[1].Body);
+        
+        Assert.Equal("chore", toCheck[0].Type);
+        Assert.Equal("", toCheck[0].SubType);    
+        Assert.Equal("Dockerfile.", toCheck[0].Header);
+        Assert.Equal("Signed-off-by: Johannes Tegnér <johannes@jitesoft.com>", toCheck[0].Body);
+    }
+    
+    
 }
