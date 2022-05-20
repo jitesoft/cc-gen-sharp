@@ -5,7 +5,7 @@ namespace Jitesoft.Libs.ConventionalCommits;
 
 public static class CommitExtension
 {
-    private static readonly Regex ConventionalParseRegex = new Regex(@"^(?<type>\w+)([(](?<subtype>.+)[)])?[:]\s(?<header>.*)([\n]{2}(?s)(?<body>.*))?");
+    private static readonly Regex ConventionalParseRegex = new Regex(@"^(?<type>\w+)([(](?<subtype>.+)[)])?[:]\s(?<header>.*)([\r\n|\r|\n]{1,2}(?s)(?<body>.*))?");
 
     public static bool IsConventional(this Commit self)
     {
