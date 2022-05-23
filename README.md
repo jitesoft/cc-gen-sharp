@@ -59,6 +59,7 @@ for now, check the 'Conventional.cs' class_
 ## With what?
 
 The application makes use of [LibGit2Sharp](https://github.com/libgit2/libgit2sharp/) to 
-work with the git log and [Scriban](https://github.com/scriban/scriban) to handle the templates.  
+work with the git log, [Scriban](https://github.com/scriban/scriban) to handle the templates 
+and [YamlDotNet](https://github.com/aaubry/YamlDotNet) for Yaml parsing.  
 The command line helper used is [System.CommandLine](https://github.com/dotnet/command-line-api) 
 and tests makes use of [XUnit](https://xunit.net/) and [Moq](https://github.com/moq/moq)

@@ -19,17 +19,12 @@
     <PropertyGroup Condition=" '$(Version)' == '' ">
         <VersionSuffix Condition=" '$(VersionSuffix)' == '' ">1.0.0</VersionSuffix>
         <Version Condition=" '$(Version)' == '' ">$(VersionSuffix)</Version>
-    </PropertyGroup>    
-    
+    </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0182" />
       <PackageReference Include="Scriban" Version="5.4.4" />
       <PackageReference Include="System.CommandLine" Version="2.0.0-beta3.22114.1" />
       <PackageReference Include="YamlDotNet" Version="11.2.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\lib-cc\lib-cc.csproj" />
     </ItemGroup>
 
 </Project>
