@@ -4,6 +4,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cc-gen", "cc-gen\cc-gen.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cc-gen.tests", "cc-gen.tests\cc-gen.tests.csproj", "{78E23272-05CB-4FCD-9AE8-CFD158FF73A5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{7E30A818-2618-4AB0-ABFB-C070E6138FDD}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		cc-gen.sln = cc-gen.sln
+		README.md = README.md
+		LICENSE = LICENSE
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
