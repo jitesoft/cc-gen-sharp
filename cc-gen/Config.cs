@@ -5,10 +5,18 @@ namespace Jitesoft.CcGen;
 
 public class Config
 {
-    public string Commit { get; set; } =
-        "  * [ {{ commit.sha | string.slice1 0 6 }} ] {{ header }} ({{ commit.committer.name }}) {{ commit.committer.when }}\n";
+    public string Header { get; set; } = "# Change Log";
 
-    public string Type { get; set; } = "## {{ type }}  ";
+    public bool GroupBreakingChanges { get; set; } = true;
+    public string GroupedBreakingHeader { get; set; } = "## Breaking changes";
+
+    public string Commit { get; set; } =
+        "  * [ {{ commit.sha | string.slice1 0 6 }} ] {{ header }} ({{ commit.committer.name }}) {{ commit.committer.when }}  ";
+
+    public string BreakingCommit { get; set; } =
+        "  * [ {{ commit.sha | string.slice1 0 6 }} ] **breaking** {{ header }} ({{ commit.committer.name }}) {{ commit.committer.when }}  ";
+    
+    public string Type { get; set; } = "### {{ type }}  ";
 
     public string DefaultType = "misc";
 

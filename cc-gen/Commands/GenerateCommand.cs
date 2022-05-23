@@ -104,12 +104,9 @@ public class GenerateCommand : Command
         
         var grouped = commits.GroupBy(x => ParseType(x.Type));
         
-        
-        
         var formatter = new ScribanFormatter(Config.LoadConfiguration());
-
-        
         var str = formatter.FormatCommits(grouped);
+
         
         Console.Write(str);
         return str;
