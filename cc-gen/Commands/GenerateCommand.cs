@@ -1,9 +1,14 @@
 ﻿using System.CommandLine;
-using Jitesoft.Libs.ConventionalCommits;
+using Jitesoft.CcGen.Extensions;
 using LibGit2Sharp;
 
 namespace Jitesoft.CcGen.Commands;
 
+/// <summary>
+/// Generate command.
+///
+/// This class takes care of the logic to generate the changelog.
+/// </summary>
 public class GenerateCommand : Command
 {
     public GenerateCommand() 
@@ -41,6 +46,31 @@ public class GenerateCommand : Command
         );
     }
 
+    private string? GetLatestTag(Repository repository)
+    {
+        var fromSha = repository.Head.Tip.Sha;
+        string? toSha = null;
+
+        // We want to read from other way around (latest first)!
+        var allTags = repository.Tags.Reverse().ToList();
+
+        if (allTags.Count == 0)
+        {
+            return toSha;
+        }
+        
+        if (allTags.First().Target.Sha != fromSha)
+        {
+            toSha = allTags.First().Target.Sha;
+        } 
+        else if (allTags.Count > 1)
+        {
+            toSha = allTags[1].Target.Sha;
+        }
+
+        return toSha;
+    }
+
     private string Generate(string? from, string? to, bool latest)
     {
         var repository = LoadLocalRepository();
@@ -51,25 +81,10 @@ public class GenerateCommand : Command
         if (latest)
         {
             fromSha = repository.Head.Tip.Sha;
-
-            // We want to read from other way around (latest first)!
-            var allTags = repository.Tags.Reverse().ToList();
-
-            if (allTags.Count != 0)
-            {
-                if (allTags.First().Target.Sha != fromSha)
-                {
-                    toSha = allTags.First().Target.Sha;
-                } 
-                else if (allTags.Count > 1)
-                {
-                    toSha = allTags[1].Target.Sha;
-                }
-            }
+            toSha = GetLatestTag(repository);
         }
         else
         {
-                    
             if (from != null)
             {
                 fromSha = repository.Tags[from].Target.Sha;
@@ -105,7 +120,7 @@ public class GenerateCommand : Command
         var grouped = commits.GroupBy(x => ParseType(x.Type));
         
         var formatter = new ScribanFormatter(Config.LoadConfiguration());
-        var str = formatter.FormatCommits(grouped);
+        var str = formatter.FormatCommits(grouped.OrderBy(c => c.Key));
 
         
         Console.Write(str);
@@ -114,11 +129,10 @@ public class GenerateCommand : Command
 
     private static Repository LoadLocalRepository()
     {
-    
-        // Find root folder.
         var path = Environment.CurrentDirectory;
     
 #if DEBUG
+        // When running from IDE, the 'current directory' is a sub-directory.
         var found = false;
         while (!found)
         {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Jitesoft.Libs.ConventionalCommits;
+using Jitesoft.CcGen.Extensions;
 using LibGit2Sharp;
 using Xunit;
 
-namespace lib_cc.tests;
+namespace  Jitesoft.CcGen.Tests;
 
 public class RepositoryExtensionTest
 {

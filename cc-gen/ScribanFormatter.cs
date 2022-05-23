@@ -1,10 +1,12 @@
-﻿using Jitesoft.Libs.ConventionalCommits;
-using LibGit2Sharp;
-using Scriban;
+﻿using Scriban;
 
 namespace Jitesoft.CcGen;
 
-public class ScribanFormatter : ITemplateFormatter
+/// <summary>
+/// Class which uses Scriban template engine to parse
+/// templates into strings.
+/// </summary>
+public class ScribanFormatter
 {
     private readonly Config _config;
 
@@ -31,53 +33,78 @@ public class ScribanFormatter : ITemplateFormatter
         return tmp.Render(new { type });
     }
 
-    public string FormatCommits(IEnumerable<IGrouping<string, Conventional>> commits)
+    private string FormatBreakingChanges(IEnumerable<IGrouping<string, Conventional>> commits)
     {
         var stringWriter = new StringWriter();
-        stringWriter.WriteLine(_config.Header);
-        stringWriter.WriteLine();
+        commits = commits.ToList();
 
-        foreach (var val in commits)
-        {
-            stringWriter.WriteLine(FormatType(val.Key));
-            foreach (var commit in val)
-            {
-                if (commit.Breaking && _config.GroupBreakingChanges)
-                {
-                    continue;
-                }
-
-                stringWriter.WriteLine(
-                    commit.Breaking ? FormatBreakingCommit(commit) : FormatCommit(commit)
-                );
-            }
-
-            stringWriter.WriteLine();
-        }
-
-        if (_config.GroupBreakingChanges && commits.Any(l => l.Any(c => c.Breaking)))
+        if (commits.Any(l => l.Any(c => c.Breaking)))
         {
             stringWriter.WriteLine(_config.GroupedBreakingHeader);
             stringWriter.WriteLine();
 
             foreach (var val in commits)
             {
-                var breaking = val.Where(c => c.Breaking).ToList();
-                if (breaking.Count == 0)
+                var commitsAsString = FormatCommitList(
+                    val.Where(c => c.Breaking).ToList()
+                );
+                
+                
+                if (commitsAsString.Trim().Length > 0)
                 {
-                    continue;
+                    stringWriter.WriteLine(FormatType(val.Key));
+                    stringWriter.Write(commitsAsString);
+                    stringWriter.WriteLine();
                 }
+            }
+        }
 
+        return stringWriter.ToString();
+    }
+
+    private string FormatCommitList(IList<Conventional> commits)
+    {
+        var stringWriter = new StringWriter();
+        
+        foreach (var commit in commits)
+        {
+            stringWriter.WriteLine(
+                commit.Breaking && !_config.GroupBreakingChanges ? FormatBreakingCommit(commit) : FormatCommit(commit)
+            );
+        }
+
+        return stringWriter.ToString();
+    }
+    
+    public string FormatCommits(IEnumerable<IGrouping<string, Conventional>> commits)
+    {
+        commits = commits.ToList();
+        var stringWriter = new StringWriter();
+        stringWriter.WriteLine(_config.Header);
+        stringWriter.WriteLine();
+
+        foreach (var val in commits)
+        {
+            var commitsAsString = FormatCommitList(
+                _config.GroupBreakingChanges ? 
+                    val.Where(c => !c.Breaking).ToList() : 
+                    val.ToList()
+            );
+
+            if (commitsAsString.Trim().Length > 0)
+            {
                 stringWriter.WriteLine(FormatType(val.Key));
-                foreach (var commit in breaking)
-                {
-                    stringWriter.WriteLine(
-                        FormatCommit(commit)
-                    );
-                }
-
+                stringWriter.Write(commitsAsString);
                 stringWriter.WriteLine();
             }
+            
+        }
+
+        if (_config.GroupBreakingChanges)
+        {
+            stringWriter.Write(
+                FormatBreakingChanges(commits)
+            );
         }
 
 

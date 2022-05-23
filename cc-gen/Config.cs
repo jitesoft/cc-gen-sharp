@@ -3,6 +3,9 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Jitesoft.CcGen;
 
+/// <summary>
+/// Base configuration.
+/// </summary>
 public class Config
 {
     public string Header { get; set; } = "# Change Log";
@@ -18,7 +21,7 @@ public class Config
     
     public string Type { get; set; } = "### {{ type }}  ";
 
-    public string DefaultType = "misc";
+    public string DefaultType = "Misc";
 
     public Dictionary<string, List<string>> TypeMap { get; set; } = new()
     {

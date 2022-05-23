@@ -4,6 +4,11 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Jitesoft.CcGen.Commands;
 
+/// <summary>
+/// Init Command
+///
+/// This class takes care of creating a local or global config file.
+/// </summary>
 public class InitCommand : Command
 {
 
@@ -33,7 +38,7 @@ public class InitCommand : Command
         await CreateLocalConfig();
     }
 
-    private async Task CreateGlobalConfig()
+    private static async Task CreateGlobalConfig()
     {
         var homePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "/.cc-gen";
 
@@ -48,7 +53,7 @@ public class InitCommand : Command
         }
     }
 
-    private async Task CreateLocalConfig()
+    private static async Task CreateLocalConfig()
     {
         var localPath = Environment.CurrentDirectory + "/.cc-gen";
         if (File.Exists(localPath))

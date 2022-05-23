@@ -2,9 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cc-gen", "cc-gen\cc-gen.csproj", "{8BE39E1A-4E2E-434E-A764-E125246DC7B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lib-cc", "lib-cc\lib-cc.csproj", "{854F5267-6A4F-4B11-B228-AB9837B3C362}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lib-cc.tests", "lib-cc.tests\lib-cc.tests.csproj", "{78E23272-05CB-4FCD-9AE8-CFD158FF73A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cc-gen.tests", "cc-gen.tests\cc-gen.tests.csproj", "{78E23272-05CB-4FCD-9AE8-CFD158FF73A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,10 +14,6 @@ Global
 		{8BE39E1A-4E2E-434E-A764-E125246DC7B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BE39E1A-4E2E-434E-A764-E125246DC7B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BE39E1A-4E2E-434E-A764-E125246DC7B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{854F5267-6A4F-4B11-B228-AB9837B3C362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{854F5267-6A4F-4B11-B228-AB9837B3C362}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{854F5267-6A4F-4B11-B228-AB9837B3C362}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{854F5267-6A4F-4B11-B228-AB9837B3C362}.Release|Any CPU.Build.0 = Release|Any CPU
 		{78E23272-05CB-4FCD-9AE8-CFD158FF73A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{78E23272-05CB-4FCD-9AE8-CFD158FF73A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78E23272-05CB-4FCD-9AE8-CFD158FF73A5}.Release|Any CPU.ActiveCfg = Release|Any CPU

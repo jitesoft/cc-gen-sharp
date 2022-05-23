@@ -1,6 +1,6 @@
 ﻿using LibGit2Sharp;
 
-namespace Jitesoft.Libs.ConventionalCommits;
+namespace  Jitesoft.CcGen;
 
 /// <summary>
 /// Record with conventional commit data.
