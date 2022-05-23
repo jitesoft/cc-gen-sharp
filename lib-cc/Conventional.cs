@@ -1,13 +1,19 @@
-﻿namespace Jitesoft.Libs.ConventionalCommits;
+﻿using LibGit2Sharp;
+
+namespace Jitesoft.Libs.ConventionalCommits;
 
 /// <summary>
 /// Record with conventional commit data.
-/// 
-/// The commit is always directly connected to a LibGit2Sharp.Commit and contains
-/// no references to the actual commit or tree, it's just an extracted record of the message.
 /// </summary>
 public record Conventional
 {
+    public bool Breaking { get; init; } = false;
+    
+    /// <summary>
+    /// Commit
+    /// </summary>
+    public Commit Commit { get; init; } = null!;
+    
     /// <summary>
     /// Conventional Type.
     /// This is the initial value in the conventional commit:

@@ -4,32 +4,38 @@ namespace Jitesoft.Libs.ConventionalCommits;
 
 public static class RepositoryExtension
 {
-    public static IList<Conventional> GetConventionalCommits(this Repository self, Tag? from = null, Tag? until = null, CommitSortStrategies strategy = CommitSortStrategies.Topological)
+    public static IEnumerable<Commit> GetConventionalCommits(this Repository self, string? fromSha = null, string? toSha = null, CommitSortStrategies strategy = CommitSortStrategies.Topological)
     {
-        var fromSha = from?.Target?.Sha ?? self.Head.Tip.Sha;
-        var toSha = until?.Target?.Sha;
-
+        fromSha ??= self.Head.Tip.Sha;
+        
         var commits = self.Commits.QueryBy(new CommitFilter
         {
             SortBy = strategy,
             IncludeReachableFrom = fromSha,
         });
-        
-        var filtered = commits.Where(c => c.IsConventional());
-        var result = new List<Conventional>();
-        foreach (var c in filtered)
+
+        foreach (var c in commits)
         {
             if (toSha != null && c.Sha == toSha)
             {
-                break;
+                yield break;
             }
             
-            if (c.ParseConventional(out var conventional))
+            if (c.IsConventional())
             {
-                result.Add(conventional!);
+                yield return c;
             }
         }
+    }
 
-        return result;
+    public static IEnumerable<Conventional> ConvertConventional(this IEnumerable<Commit> self)
+    {
+        foreach (var c in self)
+        {
+            if (c.ParseConventional(out var conventional))
+            {
+                yield return conventional!;
+            }
+        }
     }
 }

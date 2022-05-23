@@ -9,7 +9,7 @@ namespace lib_cc.tests;
 
 public class RepositoryExtensionTest
 {
-    public Repository LoadLocalRepository()
+    private Repository LoadLocalRepository()
     {
         // Find root folder.
         var path = Environment.CurrentDirectory;
@@ -30,7 +30,9 @@ public class RepositoryExtensionTest
     [Fact]
     public void TestGetConventionalCommitsNoRange()
     {
-        var commits = LoadLocalRepository().GetConventionalCommits();
+        var commits = LoadLocalRepository().GetConventionalCommits()
+            .ConvertConventional()
+            .ToList();
         // Get last 4 to check.
         var toCheck = commits.TakeLast(4).ToArray();
 
@@ -65,7 +67,10 @@ public class RepositoryExtensionTest
         var tagToStartFrom = repository.Tags["0.0.1"];
         
         
-        var toCheck = LoadLocalRepository().GetConventionalCommits(tagToStartFrom);
+        var toCheck = LoadLocalRepository()
+            .GetConventionalCommits(tagToStartFrom.Target.Sha)
+            .ConvertConventional()
+            .ToList();
 
         Assert.Equal(2, toCheck.Count);
         
@@ -87,7 +92,10 @@ public class RepositoryExtensionTest
         var tagToEndWith = repository.Tags["0.0.1"];
         var tagToStartFrom = repository.Tags["0.0.2"];
         
-        var toCheck = LoadLocalRepository().GetConventionalCommits(tagToStartFrom, tagToEndWith);
+        var toCheck = LoadLocalRepository()
+            .GetConventionalCommits(tagToStartFrom.Target.Sha, tagToEndWith.Target.Sha)
+            .ConvertConventional()
+            .ToList();
 
         Assert.Equal(4, toCheck.Count);
         
