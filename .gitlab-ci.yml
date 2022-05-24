@@ -9,7 +9,7 @@ test:
   stage: test
   image: mcr.microsoft.com/dotnet/sdk:6.0
   script:
-    - dotnet restore cc-gen.tests/cc-gen.tests.csproj
+    - dotnet restore
     - dotnet test
 build:
   stage: build
