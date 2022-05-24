@@ -24,7 +24,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\cc-gen\cc-gen.csproj" />
-      <ProjectReference Include="..\lib-cc\lib-cc.csproj" />
     </ItemGroup>
 
 </Project>
