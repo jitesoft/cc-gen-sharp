@@ -6,11 +6,14 @@ stages:
   - release
 
 test:
+  variables:
+    GIT_STRATEGY: clone
   stage: test
   image: mcr.microsoft.com/dotnet/sdk:6.0
   script:
     - dotnet restore
     - dotnet test
+
 build:
   stage: build
   rules:
