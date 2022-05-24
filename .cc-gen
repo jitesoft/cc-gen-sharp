@@ -1,0 +1,31 @@
+DefaultType: Misc
+Header: '# Change Log'
+GroupBreakingChanges: true
+GroupedBreakingHeader: '## Breaking changes'
+Commit: '  * [ [{{ commit.sha | string.slice1 0 6 }}](https://github.com/jitesoft/cc-gen-sharp/commit/{{ commit.sha }}) ] {{ header }} <small>({{ commit.committer.name }}) {{ commit.committer.when }}</small>  '
+BreakingCommit: '  * [ [{{ commit.sha | string.slice1 0 6 }}](https://github.com/jitesoft/cc-gen-sharp/commit/{{ commit.sha }}) ] **breaking** {{ header }} <small>({{ commit.committer.name }}) {{ commit.committer.when }}</small>  '
+Type: '### {{ type }}  '
+TypeMap:
+  Features:
+  - feature
+  - feat
+  Fixes:
+  - hotfix
+  - fix
+  Build:
+  - build
+  Chores:
+  - chore
+  Ci:
+  - ci
+  Documentation:
+  - docs
+  - documentation
+  Style:
+  - style
+  Refactoring:
+  - refactor
+  Pref:
+  - pref
+  Test:
+  - test

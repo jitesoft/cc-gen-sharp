@@ -44,7 +44,6 @@ in the changelog, defaults to true.
 `BreakingCommit` - Template for breaking changes, only used if 'GroupBreakingChanges' is false  
 `Commit` - Template for commits  
 
-
 ```text 
 Default for 'Commit':
   * [ {{ commit.sha | string.slice1 0 6 }} ] {{ header }} ({{ commit.committer.name }}) {{ commit.committer.when }}  
