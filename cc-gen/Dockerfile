@@ -31,4 +31,4 @@ RUN --mount=type=bind,source=./release/linux-musl-x64,target=/tmp \
  && addgroup -g 1000 cc-gen \
  && adduser -u 1000 -G cc-gen -s /bin/ash -D cc-gen
 
-WORKDIR /app
+USER cc-gen
