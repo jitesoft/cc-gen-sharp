@@ -42,7 +42,7 @@ containerize:
     - when: never
   image: registry.gitlab.com/jitesoft/dockerfiles/misc:latest
   script:
-    - docker buildx build --platform linux/amd64 --push -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} --build-arg "BUILD_TIME=$(date -Iseconds)" --build-arg "VERSION=${CI_COMMIT_TAG}" -f cc-gen/Dockerfile .
+    - docker buildx build --platform linux/amd64 --push -t ghcr.io/jitesoft/cc-gen-sharp -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} --build-arg "BUILD_TIME=$(date -Iseconds)" --build-arg "VERSION=${CI_COMMIT_TAG}" -f cc-gen/Dockerfile .
   tags:
     - protected
     - buildx
