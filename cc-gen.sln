@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{7E30A818-2
 		cc-gen.sln = cc-gen.sln
 		README.md = README.md
 		LICENSE = LICENSE
+		.cc-gen = .cc-gen
+		.gitlab-ci.yml = .gitlab-ci.yml
 	EndProjectSection
 EndProject
 Global
