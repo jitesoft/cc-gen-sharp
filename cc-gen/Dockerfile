@@ -1,18 +1,34 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
+﻿# syntax=docker/dockerfile:experimental
+FROM registry.gitlab.com/jitesoft/dockerfiles/alpine:latest
+ARG VERSION
+ARG BUILD_TIME
+
+LABEL maintainer="Johannes Tegnér <johannes@jitesoft.com>" \
+      maintainer.org="Jitesoft" \
+      maintainer.org.uri="https://jitesoft.com" \
+      com.jitesoft.project.repo.type="git" \
+      com.jitesoft.project.repo.uri="https://gitlab.com/jitesoft/open-source/c-sharp/cc-gen" \
+      com.jitesoft.project.repo.issues="https://gitlab.com/jitesoft/open-source/c-sharp/cc-gen/issues" \
+      com.jitesoft.project.registry.uri="registry.gitlab.com/jitesoft/open-source/c-sharp/cc-gen" \
+      com.jitesoft.app.cc-gen.version="${VERSION}" \
+      # Open container labels
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.created="${BUILD_TIME}" \
+      org.opencontainers.image.description="cc-gen on alpine linux" \
+      org.opencontainers.image.vendor="Jitesoft" \
+      org.opencontainers.image.source="https://gitlab.com/jitesoft/open-source/c-sharp/cc-gen" \
+      # Artifact hub annotations
+      io.artifacthub.package.alternative-locations="oci://ghcr.io/jitesoft/cc-gen-sharp" \
+      io.artifacthub.package.readme-url="https://gitlab.com/jitesoft/open-source/c-sharp/cc-gen/-/raw/master/README.md" \
+      io.artifacthub.package.logo-url="https://jitesoft.com/favicon-96x96.png"
+
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+
+RUN --mount=type=bind,source=./release/linux-musl-x64,target=/tmp \
+    cp /tmp/cc-gen /usr/local/bin/ \
+ && cp /tmp/libgit*.so /usr/local/lib/  \
+ && apk add --no-cache libstdc++ libgcc \
+ && addgroup -g 1000 cc-gen \
+ && adduser -u 1000 -G cc-gen -s /bin/ash -D cc-gen
+
 WORKDIR /app
-
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["cc-gen/cc-gen.csproj", "cc-gen/"]
-RUN dotnet restore "cc-gen/cc-gen.csproj"
-COPY . .
-WORKDIR "/src/cc-gen"
-RUN dotnet build "cc-gen.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "cc-gen.csproj" -c Release -o /app/publish
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "cc-gen.dll"]
