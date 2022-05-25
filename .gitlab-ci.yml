@@ -101,5 +101,5 @@ publish_packages:
   stage: release
   script:
     - sha256sum cc-gen-v${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz > cc-gen-v${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz.sha256sum
-    - 'curl -H "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file cc-gen-v${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/cc-gen/${CI_COMMIT_TAG}/cc-gen-${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz"'
-    - 'curl -H "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file cc-gen-v${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz.sha256sum "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/cc-gen/${CI_COMMIT_TAG}/cc-gen-${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz.sha256sum"'
+    - 'curl --retry 3 -H "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file cc-gen-v${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/cc-gen/${CI_COMMIT_TAG}/cc-gen-${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz"'
+    - 'curl --retry 3 -H "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file cc-gen-v${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz.sha256sum "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/cc-gen/${CI_COMMIT_TAG}/cc-gen-${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz.sha256sum"'

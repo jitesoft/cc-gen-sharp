@@ -5,6 +5,10 @@ GroupedBreakingHeader: '## Breaking changes'
 Commit: '  * [ [{{ commit.sha | string.slice1 0 6 }}](https://github.com/jitesoft/cc-gen-sharp/commit/{{ commit.sha }}) ] {{ header }} <small>({{ commit.committer.name }}) {{ commit.committer.when }}</small>  '
 BreakingCommit: '  * [ [{{ commit.sha | string.slice1 0 6 }}](https://github.com/jitesoft/cc-gen-sharp/commit/{{ commit.sha }}) ] **breaking** {{ header }} <small>({{ commit.committer.name }}) {{ commit.committer.when }}</small>  '
 Type: '### {{ type }}  '
+Footer: |-
+  Latest binaries can be found at [GitLab](https://gitlab.com/jitesoft/open-source/c-sharp/cc-gen/-/packages)  
+  Latest container image can be found at [GitLab](https://gitlab.com/jitesoft/open-source/c-sharp/cc-gen/container_registry)
+  and [GitHub](https://github.com/jitesoft/cc-gen-sharp/pkgs/container/cc-gen-sharp)
 TypeMap:
   Features:
   - feature
