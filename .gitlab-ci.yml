@@ -29,7 +29,7 @@ build:
   script:
     - dotnet restore cc-gen/cc-gen.csproj
     - dotnet publish cc-gen/cc-gen.csproj -c Release --self-contained true -r ${BUILD_ARCH} -v m --version-suffix ${CI_COMMIT_TAG} -o release/${BUILD_ARCH}
-    - $(cd release/${BUILD_ARCH} && tar -czf ${CI_PROJECT_DIR}/cc-gen-v${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz)
+    - $(cd release/${BUILD_ARCH} && tar -czf ${CI_PROJECT_DIR}/cc-gen-v${CI_COMMIT_TAG}-${BUILD_ARCH}.tar.gz *)
   artifacts:
     paths:
       - release/
