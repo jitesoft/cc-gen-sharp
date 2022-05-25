@@ -52,7 +52,7 @@ public class GenerateCommand : Command
         string? toSha = null;
 
         // We want to read from other way around (latest first)!
-        var allTags = repository.Tags.Reverse().ToList();
+        var allTags = repository.Tags.OrderBy(x => ((Commit)x.PeeledTarget).Committer.When).Reverse().ToList();
 
         if (allTags.Count == 0)
         {
