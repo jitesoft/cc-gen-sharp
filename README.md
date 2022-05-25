@@ -35,6 +35,7 @@ the command was invoked.
 The following configuration values are available:
 
 `Header` - The header of the changelog, defaults to '# Change Log'  
+`Footer` - The footer of the changelog, defaults to ''  
 `GroupBreakingChanges` - If any breaking changes should have their own section
 in the changelog, defaults to true.  
 `GroupBreakingHeader` - Header for breaking changes, defautls to '## Breaking changes'  

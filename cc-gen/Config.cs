@@ -9,6 +9,7 @@ namespace Jitesoft.CcGen;
 public class Config
 {
     public string Header { get; set; } = "# Change Log";
+    public string Footer { get; set; } = "";
 
     public bool GroupBreakingChanges { get; set; } = true;
     public string GroupedBreakingHeader { get; set; } = "## Breaking changes";

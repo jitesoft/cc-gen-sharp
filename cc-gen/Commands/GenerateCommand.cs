@@ -122,7 +122,10 @@ public class GenerateCommand : Command
         var formatter = new ScribanFormatter(Config.LoadConfiguration());
         var str = formatter.FormatCommits(grouped.OrderBy(c => c.Key));
 
-        
+        if (!string.IsNullOrWhiteSpace(config.Footer))
+        {
+            str += "  " + Environment.NewLine + config.Footer;
+        }
         Console.Write(str);
         return str;
     }
