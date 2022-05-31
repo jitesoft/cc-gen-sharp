@@ -22,11 +22,12 @@ LABEL maintainer="Johannes Tegnér <johannes@jitesoft.com>" \
       io.artifacthub.package.readme-url="https://gitlab.com/jitesoft/open-source/c-sharp/cc-gen/-/raw/master/README.md" \
       io.artifacthub.package.logo-url="https://jitesoft.com/favicon-96x96.png"
 
+ARG TARGETARCH
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 
-RUN --mount=type=bind,source=./release/linux-musl-x64,target=/tmp \
-    cp /tmp/cc-gen /usr/local/bin/ \
- && cp /tmp/libgit*.so /usr/local/lib/  \
+RUN --mount=type=bind,source=./release,target=/tmp \
+    cp /tmp/${TARGETARCH}/cc-gen /usr/local/bin/ \
+ && cp /tmp/${TARGETARCH}/libgit*.so /usr/local/lib/  \
  && apk add --no-cache libstdc++ libgcc \
  && addgroup -g 1000 cc-gen \
  && adduser -u 1000 -G cc-gen -s /bin/ash -D cc-gen
