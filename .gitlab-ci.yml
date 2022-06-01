@@ -27,6 +27,8 @@ build:
       - { BUILD_ARCH: "linux-musl-x64" }
       - { BUILD_ARCH: "linux-musl-arm64" }
       - { BUILD_ARCH: "linux-musl-arm" }
+      - { BUILD_ARCH: "osx-x64" }
+      - { BUILD_ARCH: "osx-arm64" }
   image: mcr.microsoft.com/dotnet/sdk:6.0
   script:
     - dotnet restore cc-gen/cc-gen.csproj
@@ -102,6 +104,8 @@ publish_packages:
       - { BUILD_ARCH: "linux-musl-x64" }
       - { BUILD_ARCH: "linux-musl-arm64" }
       - { BUILD_ARCH: "linux-musl-arm" }
+      - { BUILD_ARCH: "osx-x64" }
+      - { BUILD_ARCH: "osx-arm64" }
   needs:
     - job: build
       artifacts: true
