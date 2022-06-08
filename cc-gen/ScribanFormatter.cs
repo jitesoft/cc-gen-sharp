@@ -46,7 +46,9 @@ public class ScribanFormatter
             foreach (var val in commits)
             {
                 var commitsAsString = FormatCommitList(
-                    val.Where(c => c.Breaking).ToList()
+                    val.Where(c => c.Breaking)
+                        .OrderByDescending(c => c.Commit.Author.When)
+                        .ToList()
                 );
                 
                 
@@ -86,9 +88,11 @@ public class ScribanFormatter
         foreach (var val in commits)
         {
             var commitsAsString = FormatCommitList(
-                _config.GroupBreakingChanges ? 
-                    val.Where(c => !c.Breaking).ToList() : 
-                    val.ToList()
+                (
+                    _config.GroupBreakingChanges ? 
+                    val.Where(c => !c.Breaking) : 
+                    val
+                ).OrderByDescending(c => c.Commit.Committer.When).ToList()
             );
 
             if (commitsAsString.Trim().Length > 0)
