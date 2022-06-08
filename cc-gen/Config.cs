@@ -42,7 +42,10 @@ public class Config
     {
         Config config = new Config();
         var yamlDeserializer =
-            new DeserializerBuilder().WithNamingConvention(PascalCaseNamingConvention.Instance).Build();
+            new DeserializerBuilder()
+                .WithNamingConvention(PascalCaseNamingConvention.Instance)
+                .IgnoreUnmatchedProperties()
+                .Build();
 
         var localPath = Environment.CurrentDirectory + "/.cc-gen";
 
