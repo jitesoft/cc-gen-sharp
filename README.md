@@ -56,6 +56,15 @@ Default for 'BreakingCommit'
 _Will later fill this part with a bit more information on what is passed to the template engine,
 for now, check the 'Conventional.cs' class_
 
+### gen | generate
+
+The generate command will generate a full changelog by default. It will order each commit under a tag and its types.  
+The following options can be passed: `--latest`, `--from <tag>` `--to <tag>`
+
+If `--latest` is used, cc-gen will print the changes between current tip and the last tag.  
+If `--from` is used, a changelog without tags (will change in later version) will be 
+printed from the given tag til the `--to` tag or first commit.
+
 ## With what?
 
 The application makes use of [LibGit2Sharp](https://github.com/libgit2/libgit2sharp/) to 
@@ -63,3 +72,8 @@ work with the git log, [Scriban](https://github.com/scriban/scriban) to handle t
 and [YamlDotNet](https://github.com/aaubry/YamlDotNet) for Yaml parsing.  
 The command line helper used is [System.CommandLine](https://github.com/dotnet/command-line-api) 
 and tests makes use of [XUnit](https://xunit.net/) and [Moq](https://github.com/moq/moq)
+
+## Examples!
+
+For an example, check the tags for cc-gen at [GitLab](https://gitlab.com/jitesoft/open-source/c-sharp/cc-gen/-/tags) 
+or [GitHub](github.com/jitesoft/cc-gen-sharp/releases).
