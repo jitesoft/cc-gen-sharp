@@ -1,5 +1,6 @@
 ﻿using System.CommandLine;
 using Jitesoft.CcGen.Extensions;
+using Jitesoft.CcGen.Format;
 using LibGit2Sharp;
 
 namespace Jitesoft.CcGen.Commands;
@@ -11,15 +12,18 @@ namespace Jitesoft.CcGen.Commands;
 /// </summary>
 public class GenerateCommand : Command
 {
-    public GenerateCommand() 
+    private readonly IFormatter _formatter;
+
+    public GenerateCommand(IFormatter formatter)
         : base("generate", "Generate changelog")
     {
+        _formatter = formatter;
         var fromOpt = new Option<string?>(
             name: "--from", 
             description: "Tag to use as start point, defaults to current head tip", 
             getDefaultValue: () => null
         );
-            
+
         var toOpt = new Option<string?>(
             name: "--to",
             description: "Tag to use as start point, defaults first commit", 
@@ -37,38 +41,13 @@ public class GenerateCommand : Command
         AddOption(latestOpt);
 
         AddAlias("gen");
-        
+
         this.SetHandler(
             (string? from, string? to, bool latest) => Generate(from, to, latest), 
             fromOpt, 
             toOpt,
             latestOpt
         );
-    }
-
-    private string? GetLatestTag(Repository repository)
-    {
-        var fromSha = repository.Head.Tip.Sha;
-        string? toSha = null;
-
-        // We want to read from other way around (latest first)!
-        var allTags = repository.Tags.OrderBy(x => ((Commit)x.PeeledTarget).Committer.When).Reverse().ToList();
-
-        if (allTags.Count == 0)
-        {
-            return toSha;
-        }
-        
-        if (allTags.First().Target.Sha != fromSha)
-        {
-            toSha = allTags.First().Target.Sha;
-        } 
-        else if (allTags.Count > 1)
-        {
-            toSha = allTags[1].Target.Sha;
-        }
-
-        return toSha;
     }
 
     private string Generate(string? from, string? to, bool latest)
@@ -81,7 +60,7 @@ public class GenerateCommand : Command
         if (latest)
         {
             fromSha = repository.Head.Tip.Sha;
-            toSha = GetLatestTag(repository);
+            toSha = repository.GetLatestTag();
         }
         else
         {
@@ -117,10 +96,15 @@ public class GenerateCommand : Command
             return config.DefaultType;
         }
         
-        var grouped = commits.GroupBy(x => ParseType(x.Type));
-        
-        var formatter = new ScribanFormatter(Config.LoadConfiguration());
-        var str = formatter.FormatCommits(grouped.OrderBy(c => c.Key));
+        var str = _formatter.FormatCommits(
+            commits
+                .GroupBy(x => ParseType(x.Type))
+                .OrderBy(c => c.Key)
+                .ToDictionary(
+                    c => c.Key,
+                    c => c.AsEnumerable()
+                )
+            );
 
         if (!string.IsNullOrWhiteSpace(config.Footer))
         {
@@ -133,7 +117,7 @@ public class GenerateCommand : Command
     private static Repository LoadLocalRepository()
     {
         var path = Environment.CurrentDirectory;
-    
+
 #if DEBUG
         // When running from IDE, the 'current directory' is a sub-directory.
         var found = false;
@@ -146,7 +130,7 @@ public class GenerateCommand : Command
             }
         }
 #endif
-        
+
         var repository = new Repository(path);
         return repository;
     }

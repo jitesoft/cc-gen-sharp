@@ -40,4 +40,35 @@ public static class RepositoryExtension
         }
     }
 
+    /// <summary>
+    /// Get commit SHA of latest tag from the repository head.
+    /// If the tag is the same SHA as the latest commit, second tag will be returned.
+    /// </summary>
+    /// <param name="self">Repository.</param>
+    /// <returns>SHA of the tagged commit.</returns>
+    public static string? GetLatestTag(this Repository self)
+    {
+        var fromSha = self.Head.Tip.Sha;
+        string? toSha = null;
+
+        // We want to read from other way around (latest first)!
+        var allTags = self.Tags.OrderBy(x => ((Commit)x.PeeledTarget).Committer.When).Reverse().ToList();
+
+        if (allTags.Count == 0)
+        {
+            return toSha;
+        }
+
+        if (allTags.First().Target.Sha != fromSha)
+        {
+            toSha = allTags.First().Target.Sha;
+        }
+        else if (allTags.Count > 1)
+        {
+            toSha = allTags[1].Target.Sha;
+        }
+
+        return toSha;
+    }
+
 }
