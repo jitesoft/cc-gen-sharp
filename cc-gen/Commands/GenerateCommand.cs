@@ -42,25 +42,17 @@ public class GenerateCommand : Command
             getDefaultValue: () => false
         );
 
-        var fullOpt = new Option<bool>(
-            name: "--full",
-            description: "Generates full changelog including all tags.",
-            getDefaultValue: () => false
-        );
-
         AddOption(fromOpt);
         AddOption(toOpt);
         AddOption(latestOpt);
-        AddOption(fullOpt);
 
         AddAlias("gen");
 
         this.SetHandler(
-            (string? from, string? to, bool latest, bool full) => Generate(from, to, latest, full),
+            (string? from, string? to, bool latest) => Generate(from, to, latest),
             fromOpt, 
             toOpt,
-            latestOpt,
-            fullOpt
+            latestOpt
         );
     }
 
@@ -174,22 +166,14 @@ public class GenerateCommand : Command
     }
 
 
-    private void Generate(string? from, string? to, bool latest, bool full)
+    private void Generate(string? from, string? to, bool latest)
     {
-        var result = "";
-        if (full)
+        var result = latest switch
         {
-            result = GenerateFull();
-        } else if (latest)
-        {
-            result = GenerateLatest();
-        }
-        else
-        {
-            result = GenerateBetween(from, to);
-        }
-
-
+            false when from == null && to == null => GenerateFull(),
+            true => GenerateLatest(),
+            _ => GenerateBetween(from, to)
+        };
 
         if (!string.IsNullOrWhiteSpace(_config.Header))
         {
