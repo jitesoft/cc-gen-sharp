@@ -45,7 +45,7 @@ public class GenerateCommand : Command
         var fullOpt = new Option<bool>(
             name: "--full",
             description: "Generates full changelog including all tags.",
-            getDefaultValue: () => true
+            getDefaultValue: () => false
         );
 
         AddOption(fromOpt);
@@ -115,11 +115,10 @@ public class GenerateCommand : Command
 
     private string GenerateLatest()
     {
-
         var fromSha = _repository.Head.Tip.Sha;
         var toSha = _repository.GetLatestTag();
 
-        return GenerateBetween(fromSha, toSha);
+        return GenerateBetweenSha(fromSha, toSha);
     }
 
 
