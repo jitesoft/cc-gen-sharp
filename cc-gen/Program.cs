@@ -11,7 +11,8 @@ var scribanFormatter = new ScribanFormatter(config);
 rootCommand.AddCommand(new InitCommand());
 rootCommand.AddCommand(
     new GenerateCommand(
-        new GenericFormatter(scribanFormatter, scribanFormatter, config)
+        new GenericFormatter(scribanFormatter, scribanFormatter, config),
+        config
     )
 );
 

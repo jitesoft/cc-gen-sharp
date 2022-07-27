@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using System.Diagnostics.CodeAnalysis;
 using Jitesoft.CcGen.Extensions;
 using Jitesoft.CcGen.Format;
 using LibGit2Sharp;
@@ -13,11 +14,16 @@ namespace Jitesoft.CcGen.Commands;
 public class GenerateCommand : Command
 {
     private readonly IFormatter _formatter;
+    private readonly Config _config;
+    private readonly IRepository _repository;
 
-    public GenerateCommand(IFormatter formatter)
+    public GenerateCommand(IFormatter formatter, Config config)
         : base("generate", "Generate changelog")
     {
         _formatter = formatter;
+        _config = config;
+        _repository = LoadLocalRepository();
+
         var fromOpt = new Option<string?>(
             name: "--from", 
             description: "Tag to use as start point, defaults to current head tip", 
@@ -36,52 +42,96 @@ public class GenerateCommand : Command
             getDefaultValue: () => false
         );
 
+        var fullOpt = new Option<bool>(
+            name: "--full",
+            description: "Generates full changelog including all tags.",
+            getDefaultValue: () => true
+        );
+
         AddOption(fromOpt);
         AddOption(toOpt);
         AddOption(latestOpt);
+        AddOption(fullOpt);
 
         AddAlias("gen");
 
         this.SetHandler(
-            (string? from, string? to, bool latest) => Generate(from, to, latest), 
+            (string? from, string? to, bool latest, bool full) => Generate(from, to, latest, full),
             fromOpt, 
             toOpt,
-            latestOpt
+            latestOpt,
+            fullOpt
         );
     }
 
-    private string Generate(string? from, string? to, bool latest)
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
+    private string GenerateFull()
     {
-        var repository = LoadLocalRepository();
+        var tags = _repository.Tags.OrderBy(
+                x => ((Commit)x.PeeledTarget).Committer.When
+            )
+            .Reverse()
+            .ToList();
 
-        string? fromSha = null;
-        string? toSha = null;
-        
-        if (latest)
+        if (tags.Count <= 1)
         {
-            fromSha = repository.Head.Tip.Sha;
-            toSha = repository.GetLatestTag();
-        }
-        else
-        {
-            if (from != null)
-            {
-                fromSha = repository.Tags[from].Target.Sha;
-            }
-
-            if (to != null)
-            {
-                toSha = repository.Tags[to].Target.Sha;
-            }
+            // Generate all as a single log.
+            return GenerateBetween(null, null);
         }
 
-        var commits = repository.GetConventionalCommits(
-            fromSha: fromSha,
-            toSha: toSha
+        var stringWriter = new StringWriter();
+
+        // TODO: Cleanup.
+
+        var tagName = "Unreleased";
+        var prevSha = _repository.Head.Tip.Sha;
+        var i = 0;
+
+        if (tags[0].Target.Sha == prevSha)
+        {
+            tagName = tags[0].FriendlyName;
+            i++;
+        }
+
+        for (; i < tags.Count; i++)
+        {
+            stringWriter.WriteLine($"## {tagName}");
+            stringWriter.WriteLine("");
+
+            string next = tags[i].Target.Sha;
+            tagName = tags[i].FriendlyName;
+
+            stringWriter.Write(GenerateBetweenSha(prevSha, next));
+            prevSha = next;
+        }
+
+        // Last tag.
+        stringWriter.WriteLine($"## {tagName}");
+        stringWriter.WriteLine("");
+        stringWriter.Write(GenerateBetweenSha(prevSha, null));
+
+        return stringWriter.ToString();
+    }
+
+    private string GenerateLatest()
+    {
+
+        var fromSha = _repository.Head.Tip.Sha;
+        var toSha = _repository.GetLatestTag();
+
+        return GenerateBetween(fromSha, toSha);
+    }
+
+
+    private string GenerateBetweenSha(string? from, string? to)
+    {
+        var commits = _repository.GetConventionalCommits(
+            fromSha: from,
+            toSha: to
         ).ConvertConventional().ToList();
 
         var config = Config.LoadConfiguration();
-        
+
         string ParseType(string type)
         {
             // Make this better later, for now, meh.
@@ -95,7 +145,7 @@ public class GenerateCommand : Command
 
             return config.DefaultType;
         }
-        
+
         var str = _formatter.FormatCommits(
             commits
                 .GroupBy(x => ParseType(x.Type))
@@ -104,14 +154,56 @@ public class GenerateCommand : Command
                     c => c.Key,
                     c => c.AsEnumerable()
                 )
-            );
+        );
 
-        if (!string.IsNullOrWhiteSpace(config.Footer))
-        {
-            str += "  " + Environment.NewLine + config.Footer;
-        }
-        Console.Write(str);
         return str;
+    }
+
+    private string GenerateBetween(string? from, string? to)
+    {
+        if (from != null)
+        {
+            from = _repository.Tags[from].Target.Sha;
+        }
+
+        if (to != null)
+        {
+            to = _repository.Tags[to].Target.Sha;
+        }
+
+        return GenerateBetweenSha(from, to);
+    }
+
+
+    private void Generate(string? from, string? to, bool latest, bool full)
+    {
+        var result = "";
+        if (full)
+        {
+            result = GenerateFull();
+        } else if (latest)
+        {
+            result = GenerateLatest();
+        }
+        else
+        {
+            result = GenerateBetween(from, to);
+        }
+
+
+
+        if (!string.IsNullOrWhiteSpace(_config.Header))
+        {
+            Console.WriteLine(_config.Header);
+            Console.WriteLine();
+        }
+
+        Console.Write(result);
+
+        if (!string.IsNullOrWhiteSpace(_config.Footer))
+        {
+            Console.WriteLine("  " + Environment.NewLine + _config.Footer);
+        }
     }
 
     private static Repository LoadLocalRepository()

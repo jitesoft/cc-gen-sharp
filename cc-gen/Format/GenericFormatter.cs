@@ -16,9 +16,6 @@ public class GenericFormatter : IFormatter
     public string FormatCommits(IDictionary<string, IEnumerable<Conventional>> commits)
     {
         var stringWriter = new StringWriter();
-        stringWriter.WriteLine(_config.Header);
-        stringWriter.WriteLine();
-
         foreach (var val in commits)
         {
             var commitsAsString = FormatCommitList(

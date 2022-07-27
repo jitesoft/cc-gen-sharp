@@ -16,7 +16,7 @@ public static class RepositoryExtension
     /// <param name="toSha">Sha to stop before.</param>
     /// <param name="strategy">Get log strategy.</param>
     /// <returns>List of commits which are conventional commits.</returns>
-    public static IEnumerable<Commit> GetConventionalCommits(this Repository self, string? fromSha = null, string? toSha = null, CommitSortStrategies strategy = CommitSortStrategies.Topological)
+    public static IEnumerable<Commit> GetConventionalCommits(this IRepository self, string? fromSha = null, string? toSha = null, CommitSortStrategies strategy = CommitSortStrategies.Topological)
     {
         fromSha ??= self.Head.Tip.Sha;
         
@@ -46,7 +46,7 @@ public static class RepositoryExtension
     /// </summary>
     /// <param name="self">Repository.</param>
     /// <returns>SHA of the tagged commit.</returns>
-    public static string? GetLatestTag(this Repository self)
+    public static string? GetLatestTag(this IRepository self)
     {
         var fromSha = self.Head.Tip.Sha;
         string? toSha = null;
