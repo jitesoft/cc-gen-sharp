@@ -1,7 +1,7 @@
 ﻿using System;
 using Jitesoft.CcGen.Extensions;
 using LibGit2Sharp;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace Jitesoft.CcGen.Tests;
@@ -13,10 +13,8 @@ public class CommitExtensionTest
     {
         var commitMessage = "feat(test): this is the header\n\nThis is the body\nWhich is multi line!";
 
-        var mock = new Mock<Commit>();
-        mock.SetupGet(x => x.Message).Returns(commitMessage);
-
-        var commit = mock.Object;
+        var commit = Substitute.For<Commit>();
+        commit.Message.Returns(commitMessage);
         
         Assert.True(commit.IsConventional());
 
@@ -38,13 +36,10 @@ This is the body
 Which is multi line!";
 
 
-        var mock = new Mock<Commit>();
-        mock.SetupGet(x => x.Message).Returns(commitMessage);
+        var commit = Substitute.For<Commit>();
+        commit.Message.Returns(commitMessage);
 
-        var commit = mock.Object;
-        
         Assert.True(commit.IsConventional());
-        
         var success = commit.TryParseConventional(out var result);
         
         Assert.True(success);
@@ -58,19 +53,13 @@ Which is multi line!";
     public void TestConventionalSuccessNoBody()
     {
         var commitMessage = @"feat: this is the header";
+        var commit = Substitute.For<Commit>();
+        commit.Message.Returns(commitMessage);
 
-
-        var mock = new Mock<Commit>();
-        mock.SetupGet(x => x.Message).Returns(commitMessage);
-
-        var commit = mock.Object;
-        
         Assert.True(commit.IsConventional());
-        
         var success = commit.TryParseConventional(out var result);
-        
+
         Assert.True(success);
-        
         Assert.Equal("feat", result!.Type);
         Assert.Equal("", result.SubType);
         Assert.Equal("this is the header", result.Header);
@@ -84,17 +73,14 @@ Which is multi line!";
 
 This is the body
 Which is multi line!";
-        
-        var mock = new Mock<Commit>();
-        mock.SetupGet(x => x.Message).Returns(commitMessage);
 
-        var commit = mock.Object;
-        
+        var commit = Substitute.For<Commit>();
+        commit.Message.Returns(commitMessage);
+
         Assert.False(commit.IsConventional());
         var success = commit.TryParseConventional(out var result);
-        
+
         Assert.False(success);
         Assert.Null(result);
-        
     }
 }
