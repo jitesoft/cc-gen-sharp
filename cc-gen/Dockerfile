@@ -28,8 +28,4 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 RUN --mount=type=bind,source=./release,target=/tmp \
     cp /tmp/${TARGETARCH}/cc-gen /usr/local/bin/ \
  && cp /tmp/${TARGETARCH}/libgit*.so /usr/local/lib/  \
- && apk add --no-cache libstdc++ libgcc \
- && addgroup -g 1000 cc-gen \
- && adduser -u 1000 -G cc-gen -s /bin/ash -D cc-gen
-
-USER cc-gen
+ && apk add --no-cache libstdc++ libgcc
