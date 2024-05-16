@@ -71,7 +71,7 @@ The application makes use of [LibGit2Sharp](https://github.com/libgit2/libgit2sh
 work with the git log, [Scriban](https://github.com/scriban/scriban) to handle the templates 
 and [YamlDotNet](https://github.com/aaubry/YamlDotNet) for Yaml parsing.  
 The command line helper used is [System.CommandLine](https://github.com/dotnet/command-line-api) 
-and tests makes use of [XUnit](https://xunit.net/) and [Moq](https://github.com/moq/moq)
+and tests makes use of [XUnit](https://xunit.net/) and [NSubstitute](https://nsubstitute.github.io/)
 
 ## Examples!
 
