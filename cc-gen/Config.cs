@@ -19,10 +19,10 @@ public class Config
 
     public string BreakingCommit { get; set; } =
         "  * [ {{ commit.sha | string.slice1 0 6 }} ] **breaking** {{ header }} ({{ commit.committer.name }}) {{ commit.committer.when }}  ";
-    
+
     public string Type { get; set; } = "### {{ type }}  ";
 
-    public string DefaultType = "Misc";
+    public string DefaultType { get; set; } = "Misc";
 
     public Dictionary<string, List<string>> TypeMap { get; set; } = new()
     {
