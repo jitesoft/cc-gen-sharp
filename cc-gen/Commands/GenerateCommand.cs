@@ -57,7 +57,7 @@ public class GenerateCommand : Command
             var latest = result.GetValue(latestOpt);
 
             Generate(from, to, latest);
-            return 1;
+            return 0;
         });
     }
 

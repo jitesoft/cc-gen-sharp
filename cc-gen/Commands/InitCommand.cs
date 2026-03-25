@@ -27,7 +27,7 @@ public class InitCommand : Command
         {
             var global = result.GetValue(globalOption);
             await InitConfig(global);
-            return 1;
+            return 0;
         });
     }
 
