@@ -15,10 +15,10 @@ public class Config
     public string GroupedBreakingHeader { get; set; } = "## Breaking changes";
 
     public string Commit { get; set; } =
-        "  * [ {{ commit.sha | string.slice1 0 6 }} ] {{ header }} ({{ commit.committer.name }}) {{ commit.committer.when }}  ";
+        "  * [ {{ sha | string.slice1 0 6 }} ] {{ header }} ({{ committer_name }}) {{ committer_when }}  ";
 
     public string BreakingCommit { get; set; } =
-        "  * [ {{ commit.sha | string.slice1 0 6 }} ] **breaking** {{ header }} ({{ commit.committer.name }}) {{ commit.committer.when }}  ";
+        "  * [ {{ sha | string.slice1 0 6 }} ] **breaking** {{ header }} ({{ committer_name }}) {{ committer_when }}  ";
 
     public string Type { get; set; } = "### {{ type }}  ";
 
@@ -42,7 +42,7 @@ public class Config
     {
         Config config = new Config();
         var yamlDeserializer =
-            new DeserializerBuilder()
+            new StaticDeserializerBuilder(new ConfigSerializerContext())
                 .WithNamingConvention(PascalCaseNamingConvention.Instance)
                 .IgnoreUnmatchedProperties()
                 .Build();
@@ -65,3 +65,7 @@ public class Config
         return config;
     }
 }
+
+[YamlStaticContext]
+[YamlSerializable(typeof(Config))]
+public partial class ConfigSerializerContext : StaticContext {}

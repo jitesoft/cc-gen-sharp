@@ -8,67 +8,68 @@ namespace Jitesoft.CcGen.Extensions;
 /// </summary>
 public static class RepositoryExtension
 {
-    /// <summary>
-    /// Get all conventional commits.
-    /// </summary>
     /// <param name="self">Self.</param>
-    /// <param name="fromSha">Sha to start from.</param>
-    /// <param name="toSha">Sha to stop before.</param>
-    /// <param name="strategy">Get log strategy.</param>
-    /// <returns>List of commits which are conventional commits.</returns>
-    public static IEnumerable<Commit> GetConventionalCommits(this IRepository self, string? fromSha = null, string? toSha = null, CommitSortStrategies strategy = CommitSortStrategies.Topological)
+    extension(IRepository self)
     {
-        fromSha ??= self.Head.Tip.Sha;
-        
-        var commits = self.Commits.QueryBy(new CommitFilter
+        /// <summary>
+        /// Get all conventional commits.
+        /// </summary>
+        /// <param name="fromSha">Sha to start from.</param>
+        /// <param name="toSha">Sha to stop before.</param>
+        /// <param name="strategy">Get log strategy.</param>
+        /// <returns>List of commits which are conventional commits.</returns>
+        public IEnumerable<Commit> GetConventionalCommits(string? fromSha = null, string? toSha = null, CommitSortStrategies strategy = CommitSortStrategies.Topological)
         {
-            SortBy = strategy,
-            IncludeReachableFrom = fromSha
-        });
+            fromSha ??= self.Head.Tip.Sha;
 
-        foreach (var c in commits)
-        {
-            if (toSha != null && c.Sha == toSha)
+            var commits = self.Commits.QueryBy(new CommitFilter
             {
-                yield break;
-            }
-            
-            if (c.IsConventional())
+                SortBy = strategy,
+                IncludeReachableFrom = fromSha
+            });
+
+            foreach (var c in commits)
             {
-                yield return c;
+                if (toSha != null && c.Sha == toSha)
+                {
+                    yield break;
+                }
+
+                if (c.IsConventional())
+                {
+                    yield return c;
+                }
             }
         }
-    }
 
-    /// <summary>
-    /// Get commit SHA of latest tag from the repository head.
-    /// If the tag is the same SHA as the latest commit, second tag will be returned.
-    /// </summary>
-    /// <param name="self">Repository.</param>
-    /// <returns>SHA of the tagged commit.</returns>
-    public static string? GetLatestTag(this IRepository self)
-    {
-        var fromSha = self.Head.Tip.Sha;
-        string? toSha = null;
-
-        // We want to read from other way around (latest first)!
-        var allTags = self.Tags.OrderBy(x => ((Commit)x.PeeledTarget).Committer.When).Reverse().ToList();
-
-        if (allTags.Count == 0)
+        /// <summary>
+        /// Get commit SHA of latest tag from the repository head.
+        /// If the tag is the same SHA as the latest commit, second tag will be returned.
+        /// </summary>
+        /// <returns>SHA of the tagged commit.</returns>
+        public string? GetLatestTag()
         {
+            var fromSha = self.Head.Tip.Sha;
+            string? toSha = null;
+
+            // We want to read from other way around (latest first)!
+            var allTags = self.Tags.OrderBy(x => ((Commit)x.PeeledTarget).Committer.When).Reverse().ToList();
+
+            if (allTags.Count == 0)
+            {
+                return toSha;
+            }
+
+            if (allTags.First().Target.Sha != fromSha)
+            {
+                toSha = allTags.First().Target.Sha;
+            }
+            else if (allTags.Count > 1)
+            {
+                toSha = allTags[1].Target.Sha;
+            }
+
             return toSha;
         }
-
-        if (allTags.First().Target.Sha != fromSha)
-        {
-            toSha = allTags.First().Target.Sha;
-        }
-        else if (allTags.Count > 1)
-        {
-            toSha = allTags[1].Target.Sha;
-        }
-
-        return toSha;
     }
-
 }

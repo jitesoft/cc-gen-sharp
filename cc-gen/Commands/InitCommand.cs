@@ -18,7 +18,8 @@ public class InitCommand : Command
         var globalOption = new Option<bool>("--global")
         {
             Description = "If configuration to initialize should be global (will be created in user home folder)",
-            DefaultValueFactory = (_) => false
+            DefaultValueFactory = (_) => false,
+            Aliases = { "-g" }
         };
 
         Options.Add(globalOption);
@@ -52,7 +53,7 @@ public class InitCommand : Command
         }
         else
         {
-            var serializer = new SerializerBuilder().WithNamingConvention(PascalCaseNamingConvention.Instance).Build();
+            var serializer = new StaticSerializerBuilder(new ConfigSerializerContext()).WithNamingConvention(PascalCaseNamingConvention.Instance).Build();
             await File.WriteAllTextAsync(homePath, serializer.Serialize(new Config()));
         }
     }
@@ -66,7 +67,7 @@ public class InitCommand : Command
         }
         else
         {
-            var serializer = new SerializerBuilder().WithNamingConvention(PascalCaseNamingConvention.Instance).Build();
+            var serializer = new StaticSerializerBuilder(new ConfigSerializerContext()).WithNamingConvention(PascalCaseNamingConvention.Instance).Build();
             await File.WriteAllTextAsync(localPath, serializer.Serialize(new Config()));
         }
     }

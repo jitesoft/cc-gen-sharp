@@ -28,20 +28,23 @@ public class GenerateCommand : Command
         {
             Description = "Tag to use as start point, defaults to current head tip",
             DefaultValueFactory = (_) => null,
+            Aliases = { "-f" },
         };
 
         var toOpt = new Option<string?>("--to")
         {
 
             Description = "Tag to use as start point, defaults first commit",
-            DefaultValueFactory = (_) => null
+            DefaultValueFactory = (_) => null,
+            Aliases = { "-t" }
         };
 
         var latestOpt = new Option<bool>("--latest")
         {
             Description =
                 "Print commits between current commit and latest tag (or next tag if current commit is tagged)",
-            DefaultValueFactory = (_) => false
+            DefaultValueFactory = (_) => false,
+            Aliases = { "-l" }
         };
 
         Options.Add(fromOpt);
