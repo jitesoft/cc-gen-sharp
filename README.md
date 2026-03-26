@@ -47,14 +47,14 @@ in the changelog, defaults to true.
 
 ```text 
 Default for 'Commit':
-  * [ {{ commit.sha | string.slice1 0 6 }} ] {{ header }} ({{ commit.committer.name }}) {{ commit.committer.when }}  
+  * [ {{ sha | string.slice1 0 6 }} ] {{ header }} ({{ committer_name }}) {{ committer_when }}  
 
 Default for 'BreakingCommit' 
-  * [ {{ commit.sha | string.slice1 0 6 }} ] **breaking** {{ header }} ({{ commit.committer.name }}) {{ commit.committer.when }}  
+  * [ {{ sha | string.slice1 0 6 }} ] **breaking** {{ header }} ({{ committer_name }}) {{ committer_when }}  
 ```
 
 _Will later fill this part with a bit more information on what is passed to the template engine,
-for now, check the 'Conventional.cs' class_
+for now, check the `FormatCommit` function in the `ScribanFormatter.cs` class_
 
 ### gen | generate
 
