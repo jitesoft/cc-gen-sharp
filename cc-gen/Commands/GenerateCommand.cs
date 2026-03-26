@@ -24,36 +24,44 @@ public class GenerateCommand : Command
         _config = config;
         _repository = LoadLocalRepository();
 
-        var fromOpt = new Option<string?>(
-            name: "--from", 
-            description: "Tag to use as start point, defaults to current head tip", 
-            getDefaultValue: () => null
-        );
+        var fromOpt = new Option<string?>("--from")
+        {
+            Description = "Tag to use as start point, defaults to current head tip",
+            DefaultValueFactory = (_) => null,
+            Aliases = { "-f" },
+        };
 
-        var toOpt = new Option<string?>(
-            name: "--to",
-            description: "Tag to use as start point, defaults first commit", 
-            getDefaultValue: () => null
-        );
+        var toOpt = new Option<string?>("--to")
+        {
 
-        var latestOpt = new Option<bool>(
-            name: "--latest",
-            description: "Print commits between current commit and latest tag (or next tag if current commit is tagged)",
-            getDefaultValue: () => false
-        );
+            Description = "Tag to use as start point, defaults first commit",
+            DefaultValueFactory = (_) => null,
+            Aliases = { "-t" }
+        };
 
-        AddOption(fromOpt);
-        AddOption(toOpt);
-        AddOption(latestOpt);
+        var latestOpt = new Option<bool>("--latest")
+        {
+            Description =
+                "Print commits between current commit and latest tag (or next tag if current commit is tagged)",
+            DefaultValueFactory = (_) => false,
+            Aliases = { "-l" }
+        };
 
-        AddAlias("gen");
+        Options.Add(fromOpt);
+        Options.Add(toOpt);
+        Options.Add(latestOpt);
 
-        this.SetHandler(
-            (string? from, string? to, bool latest) => Generate(from, to, latest),
-            fromOpt, 
-            toOpt,
-            latestOpt
-        );
+        Aliases.Add("gen");
+
+        SetAction(result =>
+        {
+            var from = result.GetValue(fromOpt);
+            var to = result.GetValue(toOpt);
+            var latest = result.GetValue(latestOpt);
+
+            Generate(from, to, latest);
+            return 0;
+        });
     }
 
     [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]

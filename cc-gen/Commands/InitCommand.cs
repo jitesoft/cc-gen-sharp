@@ -12,21 +12,26 @@ namespace Jitesoft.CcGen.Commands;
 public class InitCommand : Command
 {
 
-    public InitCommand() 
+    public InitCommand()
         : base("init", "Initializes local (or global) configuration file")
     {
-        var globalOption = new Option<bool>(
-            name: "--global",
-            description:
-            "If configuration to initialize should be global (will be created in user home folder)",
-            getDefaultValue: () => false
-        );
-        
-        AddOption(globalOption);
-        
-        this.SetHandler(async (bool global) => await InitConfig(global), globalOption);
+        var globalOption = new Option<bool>("--global")
+        {
+            Description = "If configuration to initialize should be global (will be created in user home folder)",
+            DefaultValueFactory = (_) => false,
+            Aliases = { "-g" }
+        };
+
+        Options.Add(globalOption);
+
+        SetAction(async (result) =>
+        {
+            var global = result.GetValue(globalOption);
+            await InitConfig(global);
+            return 0;
+        });
     }
-    
+
     private async Task InitConfig(bool global)
     {
         if (global)
@@ -34,7 +39,7 @@ public class InitCommand : Command
             await CreateGlobalConfig();
             return;
         }
-        
+
         await CreateLocalConfig();
     }
 
@@ -48,7 +53,7 @@ public class InitCommand : Command
         }
         else
         {
-            var serializer = new SerializerBuilder().WithNamingConvention(PascalCaseNamingConvention.Instance).Build();
+            var serializer = new StaticSerializerBuilder(new ConfigSerializerContext()).WithNamingConvention(PascalCaseNamingConvention.Instance).Build();
             await File.WriteAllTextAsync(homePath, serializer.Serialize(new Config()));
         }
     }
@@ -62,7 +67,7 @@ public class InitCommand : Command
         }
         else
         {
-            var serializer = new SerializerBuilder().WithNamingConvention(PascalCaseNamingConvention.Instance).Build();
+            var serializer = new StaticSerializerBuilder(new ConfigSerializerContext()).WithNamingConvention(PascalCaseNamingConvention.Instance).Build();
             await File.WriteAllTextAsync(localPath, serializer.Serialize(new Config()));
         }
     }
