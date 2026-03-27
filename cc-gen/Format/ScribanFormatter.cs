@@ -1,8 +1,7 @@
-﻿using Jitesoft.CcGen.Format;
-using Scriban;
+﻿using Scriban;
 using Scriban.Runtime;
 
-namespace Jitesoft.CcGen;
+namespace Jitesoft.CcGen.Format;
 
 /// <summary>
 /// Class which uses Scriban template engine to parse
@@ -22,6 +21,7 @@ public class ScribanFormatter : ICommitFormatter, ITypeFormatter
     {
         var template = Template.Parse(isBreaking ? _config.BreakingCommit.Trim() : _config.Commit.Trim());
         var context = new TemplateContext();
+
         context.PushGlobal(
             new ScriptObject()
             {
@@ -29,6 +29,14 @@ public class ScribanFormatter : ICommitFormatter, ITypeFormatter
                 ["header"] = commit.Header,
                 ["committer_name"] = commit.Commit.Committer.Name,
                 ["committer_when"] = commit.Commit.Committer.When,
+                ["committer_email"] = commit.Commit.Committer.Email,
+                ["author_name"] = commit.Commit.Author.Name,
+                ["author_when"] =  commit.Commit.Author.When,
+                ["author_email"] = commit.Commit.Author.Email,
+                ["message"] = commit.Commit.Message,
+                ["breaking"] = commit.Breaking,
+                ["type"] = commit.Type,
+                ["subtype"] = commit.SubType,
             }
         );
         return template.Render(context);
@@ -42,7 +50,8 @@ public class ScribanFormatter : ICommitFormatter, ITypeFormatter
         var context = new TemplateContext();
         context.PushGlobal(new ScriptObject()
         {
-            ["type"] = type
+            ["type"] = type,
+            ["subtype"] = ""
         });
         return template.Render(context);
     }

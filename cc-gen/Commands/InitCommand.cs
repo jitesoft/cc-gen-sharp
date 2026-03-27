@@ -26,8 +26,7 @@ public class InitCommand : Command
 
         SetAction(async (result) =>
         {
-            var global = result.GetValue(globalOption);
-            await InitConfig(global);
+            await InitConfig(result.GetValue(globalOption));
             return 0;
         });
     }

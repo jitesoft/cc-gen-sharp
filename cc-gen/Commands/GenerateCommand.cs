@@ -55,16 +55,15 @@ public class GenerateCommand : Command
 
         SetAction(result =>
         {
-            var from = result.GetValue(fromOpt);
-            var to = result.GetValue(toOpt);
-            var latest = result.GetValue(latestOpt);
-
-            Generate(from, to, latest);
+            Generate(
+                result.GetValue(fromOpt),
+                result.GetValue(toOpt),
+                result.GetValue(latestOpt)
+            );
             return 0;
         });
     }
 
-    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     private string GenerateFull()
     {
         var tags = _repository.Tags.OrderBy(

@@ -64,26 +64,7 @@ public static class CommitExtension
                 return false;
             }
 
-            try
-            {
-                var parsed = ConventionalParseRegex.Matches(self.Message);
-                conventional = new Conventional
-                {
-                    Commit = self,
-                    Type = parsed[0].Groups["type"].Value.Trim(),
-                    SubType = parsed[0].Groups["subtype"].Value.Trim(),
-                    Header = parsed[0].Groups["header"].Value.Trim(),
-                    Body = parsed[0].Groups["body"].Value.Trim(),
-                    Breaking = !string.IsNullOrWhiteSpace(parsed[0].Groups["break"].Value.Trim()) ||
-                               parsed[0].Groups["body"].Value.Contains("BREAKING CHANGE"),
-                };
-            }
-            catch
-            {
-                conventional = null;
-                return false;
-            }
-
+            conventional = self.ParseConventional();
             return true;
         }
     }
